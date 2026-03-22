@@ -1,0 +1,41 @@
+{
+  "name": "sora-palette",
+  "version": "0.1.0",
+  "description": "JMA気象データを使った天気予報デスクトップアプリ（Electron + Svelte 学習プロジェクト）",
+  "main": "./out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "lint": "eslint src",
+    "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
+    "typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
+    "typecheck": "npm run typecheck:node && npm run typecheck:web",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "electron-store": "^8.2.0"
+  },
+  "devDependencies": {
+    "@electron-toolkit/tsconfig": "^1.0.1",
+    "@electron-toolkit/utils": "^3.0.0",
+    "@eslint/js": "^9.0.0",
+    "@playwright/test": "^1.50.0",
+    "@sveltejs/vite-plugin-svelte": "^4.0.0",
+    "@tailwindcss/vite": "^4.1.0",
+    "daisyui": "^5.0.0",
+    "electron": "^33.2.0",
+    "electron-vite": "^3.0.0",
+    "eslint": "^9.0.0",
+    "eslint-plugin-svelte": "^2.46.0",
+    "globals": "^15.0.0",
+    "svelte": "^5.0.0",
+    "svelte-eslint-parser": "^0.43.0",
+    "tailwindcss": "^4.1.0",
+    "typescript": "^5.7.0",
+    "typescript-eslint": "^8.0.0",
+    "vitest": "^3.0.0"
+  }
+}

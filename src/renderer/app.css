@@ -1,0 +1,42 @@
+/**
+ * src/renderer/app.css
+ *
+ * Tailwind CSS v4 + daisyUI のベース CSS。
+ * テーマ定義（sora-light / sora-dark）は Gemini が実装する。
+ *
+ * 担当: Gemini（Phase 3）/ Claude（Phase 1 最小限スタブ）
+ */
+
+@import "tailwindcss";
+@plugin "daisyui";
+
+/* SoraPalette テーマ定義 */
+@layer base {
+  [data-theme="sora-light"] {
+    color-scheme: light;
+    --p: 68% 0.15 250; /* primary */
+    --pc: 100% 0 0;    /* primary-content */
+    --s: 96% 0.02 230; /* secondary */
+    --sc: 42% 0.12 250; /* secondary-content */
+    --a: 82% 0.16 85;  /* accent */
+    --ac: 100% 0 0;    /* accent-content */
+    --b1: 97% 0.02 245; /* base-100 */
+    --b2: 94% 0.03 245; /* base-200 */
+    --b3: 90% 0.04 245; /* base-300 */
+    --bc: 30% 0.06 250; /* base-content */
+  }
+
+  [data-theme="sora-dark"] {
+    color-scheme: dark;
+    --p: 82% 0.08 245;
+    --pc: 18% 0.04 250;
+    --s: 30% 0.08 250;
+    --sc: 82% 0.08 245;
+    --a: 90% 0.14 90;
+    --ac: 18% 0.04 250;
+    --b1: 18% 0.04 250;
+    --b2: 22% 0.06 250;
+    --b3: 28% 0.06 250;
+    --bc: 92% 0.01 250;
+  }
+}

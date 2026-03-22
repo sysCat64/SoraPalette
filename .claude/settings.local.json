@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /Users/martha/Documents/Repositories/SoraPalette -type f \\\\\\(-name *.ts -o -name *.tsx -o -name *.js -o -name *.svelte \\\\\\))",
+      "Read(//private/tmp/**)",
+      "Bash(npm create:*)",
+      "Bash(npx create-electron-vite@0.7.1 sorapalette-temp --template svelte-ts)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(node -e \"const p = require\\(''./node_modules/electron-store/package.json''\\); console.log\\(JSON.stringify\\({type:p.type, main:p.main, exports:p.exports}, null, 2\\)\\)\")",
+      "Bash(node -e \"const p = require\\(''./node_modules/electron-store/package.json''\\); console.log\\(Object.keys\\(p\\).join\\('', ''\\)\\)\")",
+      "Bash(./node_modules/.bin/electron --version)",
+      "Bash(python3 -c \"import sys,json; p=json.load\\(sys.stdin\\); print\\(''''electron version:'''', p.get\\(''''version''''\\)\\)\")",
+      "Bash(python3 -c \"import sys,json; p=json.load\\(sys.stdin\\); print\\(''''electron-vite version:'''', p.get\\(''''version''''\\)\\)\")",
+      "Bash(/Users/martha/Documents/Repositories/SoraPalette/test-electron2.js:*)",
+      "Bash(./node_modules/.bin/electron test-electron2.js)",
+      "Bash(xattr -l /Users/martha/Documents/Repositories/SoraPalette/node_modules/electron/dist/Electron.app/Contents/MacOS/Electron)",
+      "Bash(xattr -l /Users/martha/Documents/Repositories/SoraPalette/node_modules/electron/dist/Electron.app)",
+      "Bash(codesign -dv /Users/martha/Documents/Repositories/SoraPalette/node_modules/electron/dist/Electron.app)",
+      "Bash(echo \"ELECTRON_RUN_AS_NODE: $ELECTRON_RUN_AS_NODE\")",
+      "Bash(env)"
+    ]
+  }
+}
