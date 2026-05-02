@@ -82,6 +82,19 @@ export interface ElectronAPI {
   storeSet: <K extends StoreKey>(key: K, value: StoreSchema[K]) => Promise<IpcResult<void>>
 
   /**
+   * 天気概況テキストを取得する。
+   * @param areaCode エリアコード（例: '130000'）
+   */
+  fetchOverview: (areaCode: string) => Promise<IpcResult<unknown>>
+
+  /**
+   * 気象警報・注意報データを取得する。
+   * メインプロセスが JMA 警報 API からフェッチする（CORS 回避）。
+   * @param areaCode エリアコード（例: '130000'）
+   */
+  fetchWarning: (areaCode: string) => Promise<IpcResult<unknown>>
+
+  /**
    * デスクトップ通知を送信する。
    * @param title 通知タイトル
    * @param body 通知本文

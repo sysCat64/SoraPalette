@@ -10,13 +10,18 @@ import { derived, get, writable, type Readable } from 'svelte/store'
 import type { ElectronAPI, StoreKey, StoreSchema } from '../../preload/types'
 import { DEFAULT_AREA_CODE, PREFECTURE_AREAS, findAreaByCode, isSupportedAreaCode } from '../lib/areaCodeMap'
 import { transformJmaForecast } from '../lib/jmaForecastTransformer'
-import type { AreaOption, WeatherStoreState } from '../types/app'
+import type { AreaOption, ForecastText, WarningState, WeatherStoreState } from '../types/app'
+import type { JmaOverviewRaw, JmaWarningRaw } from '../types/jma'
+import { transformWarning } from '../lib/jmaWarningTransformer'
 
 /** 自動更新の既定値（分） */
 const DEFAULT_AUTO_REFRESH_INTERVAL_MINUTES = 30
 
 /** お気に入り最大件数 */
 const MAX_FAVORITE_AREAS = 5
+
+/** 警報なし状態の初期値 */
+const EMPTY_WARNING: WarningState = { severity: 'none', kinds: [] }
 
 /** store の初期状態 */
 const INITIAL_STATE: WeatherStoreState = {
@@ -30,7 +35,9 @@ const INITIAL_STATE: WeatherStoreState = {
   favoriteAreaCodes: [],
   autoRefreshIntervalMinutes: DEFAULT_AUTO_REFRESH_INTERVAL_MINUTES,
   weatherData: null,
-  lastUpdated: null
+  lastUpdated: null,
+  warning: EMPTY_WARNING,
+  forecastText: null
 }
 
 /** refresh の結果 */
@@ -100,6 +107,43 @@ function normalizeFavoriteAreas(areaCodes: string[]): string[] {
     0,
     MAX_FAVORITE_AREAS
   )
+}
+
+/** 概況テキストを取得して変換する。失敗時は null を返す（ベストエフォート） */
+async function fetchAndTransformOverview(
+  api: ElectronAPI | undefined,
+  areaCode: string
+): Promise<ForecastText | null> {
+  if (!api) return null
+
+  try {
+    const result = await api.fetchOverview(areaCode)
+    if (!result.success) return null
+
+    const raw = result.data as JmaOverviewRaw
+    return {
+      headline: raw.headlineText?.trim() ?? null,
+      body: raw.text?.trim() ?? null
+    }
+  } catch {
+    return null
+  }
+}
+
+/** 警報データを取得して変換する。失敗時は EMPTY_WARNING を返す（警報はベストエフォート） */
+async function fetchAndTransformWarning(
+  api: ElectronAPI | undefined,
+  areaCode: string
+): Promise<WarningState> {
+  if (!api) return EMPTY_WARNING
+
+  try {
+    const result = await api.fetchWarning(areaCode)
+    if (!result.success) return EMPTY_WARNING
+    return transformWarning(result.data as JmaWarningRaw)
+  } catch {
+    return EMPTY_WARNING
+  }
 }
 
 /** API 取得失敗時は cache-read へフォールバックする */
@@ -173,24 +217,40 @@ export function createWeatherStore(api: ElectronAPI | undefined = resolveElectro
     }))
   }
 
-  /** 実際の天気再取得 */
+  /** 実際の天気再取得（予報と警報を並列フェッチ） */
   async function refresh(areaCode = get({ subscribe }).selectedAreaCode): Promise<void> {
     try {
       ensureAreaCode(areaCode)
       setFetchingState(areaCode)
 
-      const result = await fetchAndTransformWeather(api, areaCode)
+      // 予報・警報・概況テキストを並列取得する。警報と概況はベストエフォート
+      const [forecastResult, warningResult, overviewResult] = await Promise.allSettled([
+        fetchAndTransformWeather(api, areaCode),
+        fetchAndTransformWarning(api, areaCode),
+        fetchAndTransformOverview(api, areaCode)
+      ])
+
+      // 予報が失敗した場合はエラー状態へ
+      if (forecastResult.status === 'rejected') {
+        throw forecastResult.reason
+      }
+
+      const forecast = forecastResult.value
+      const warning = warningResult.status === 'fulfilled' ? warningResult.value : EMPTY_WARNING
+      const forecastText = overviewResult.status === 'fulfilled' ? overviewResult.value : null
 
       update((state) => ({
         ...state,
         initialized: true,
         loading: false,
         refreshing: false,
-        usingCache: result.usingCache,
+        usingCache: forecast.usingCache,
         error: null,
         selectedAreaCode: areaCode,
-        weatherData: result.transformedData,
-        lastUpdated: result.lastUpdated
+        weatherData: forecast.transformedData,
+        lastUpdated: forecast.lastUpdated,
+        warning,
+        forecastText
       }))
     } catch (error) {
       update((state) => ({

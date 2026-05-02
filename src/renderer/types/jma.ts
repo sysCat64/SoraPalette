@@ -105,3 +105,49 @@ export interface JmaForecastReport {
  * 配列長は通常 2 だが、今後の変更や異常系に備えて固定長タプルではなく配列で表す。
  */
 export type JmaForecastResponse = JmaForecastReport[]
+
+// ---------------------------------------------------------------------------
+// 警報・注意報 API 型（bosai/warning/data/warning/{areaCode}.json）
+// ---------------------------------------------------------------------------
+
+/** 警報・注意報の種別 1 件 */
+export interface JmaWarningKind {
+  code?: string
+  name?: string
+  /** "発表" | "継続" | "解除" */
+  status?: string
+}
+
+/** 警報・注意報対象エリア 1 件 */
+export interface JmaWarningArea {
+  code?: string
+  name?: string
+  kinds?: JmaWarningKind[]
+}
+
+/** エリア種別ごとのグループ */
+export interface JmaWarningAreaType {
+  areaType?: string
+  areas?: JmaWarningArea[]
+}
+
+/** JMA 警報 API の生レスポンス */
+export interface JmaWarningRaw {
+  headlineText?: string
+  areaTypes?: JmaWarningAreaType[]
+}
+
+// ---------------------------------------------------------------------------
+// 概況テキスト API 型（bosai/forecast/data/overview_forecast/{areaCode}.json）
+// ---------------------------------------------------------------------------
+
+/** JMA overview_forecast API の生レスポンス */
+export interface JmaOverviewRaw {
+  publishingOffice?: string
+  reportDatetime?: string
+  targetArea?: string
+  /** 短い見出し文（1〜2文） */
+  headlineText?: string
+  /** 詳細な概況テキスト（複数段落・改行あり） */
+  text?: string
+}

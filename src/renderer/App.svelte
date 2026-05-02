@@ -10,13 +10,14 @@
 
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte'
+  import { get } from 'svelte/store'
   import { weatherStore } from './stores/weatherStore'
   import WeatherCard   from './components/weather/WeatherCard.svelte'
   import ForecastStrip from './components/weather/ForecastStrip.svelte'
   import type { ThemeId } from '../preload/types'
 
-  // weatherStore.selectedArea は derived Readable なので個別に参照する
-  const { selectedArea } = weatherStore
+  // weatherStore の derived Readable を個別に参照する
+  const { selectedArea, favoriteAreas } = weatherStore
 
   // ---- テーマ管理 ----
   let currentTheme = $state<ThemeId>('sora-light')
@@ -32,6 +33,16 @@
   async function handleAreaChange(event: Event): Promise<void> {
     const code = (event.target as HTMLSelectElement).value
     await weatherStore.selectArea(code)
+  }
+
+  // ---- お気に入り ----
+  async function toggleFavorite(): Promise<void> {
+    const { selectedAreaCode, favoriteAreaCodes } = get(weatherStore)
+    if (favoriteAreaCodes.includes(selectedAreaCode)) {
+      await weatherStore.removeFavoriteArea(selectedAreaCode)
+    } else {
+      await weatherStore.addFavoriteArea(selectedAreaCode)
+    }
   }
 
   // ---- ライフサイクル ----
@@ -61,8 +72,8 @@
       <span class="text-lg font-bold text-primary">SoraPalette</span>
     </div>
 
-    <!-- エリア選択 -->
-    <div class="navbar-center flex-1 max-w-xs">
+    <!-- エリア選択 + お気に入りボタン -->
+    <div class="navbar-center flex-1 max-w-xs flex gap-1">
       <select
         class="select select-bordered select-sm w-full"
         value={$weatherStore.selectedAreaCode}
@@ -73,6 +84,33 @@
           <option value={area.code}>{area.name}</option>
         {/each}
       </select>
+
+      <!-- お気に入り登録/解除ボタン -->
+      <button
+        class="btn btn-ghost btn-sm btn-circle"
+        onclick={toggleFavorite}
+        disabled={$weatherStore.loading}
+        aria-label={$weatherStore.favoriteAreaCodes.includes($weatherStore.selectedAreaCode)
+          ? 'お気に入りから削除'
+          : 'お気に入りに追加'}
+        title={$weatherStore.favoriteAreaCodes.includes($weatherStore.selectedAreaCode)
+          ? 'お気に入りから削除'
+          : 'お気に入りに追加'}
+      >
+        {#if $weatherStore.favoriteAreaCodes.includes($weatherStore.selectedAreaCode)}
+          <!-- 登録済み: 塗りつぶし星 -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+            fill="currentColor" class="text-warning">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>
+        {:else}
+          <!-- 未登録: 輪郭星 -->
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+        {/if}
+      </button>
     </div>
 
     <!-- 右側コントロール -->
@@ -134,8 +172,38 @@
     </div>
   </header>
 
+  <!-- お気に入りストリップ（登録済みエリアのクイックアクセス） -->
+  {#if $favoriteAreas.length > 0}
+    <div class="bg-base-100 border-b border-base-300 px-4 py-2 flex gap-2 flex-wrap">
+      {#each $favoriteAreas as area}
+        <button
+          class="btn btn-xs {$weatherStore.selectedAreaCode === area.code ? 'btn-primary' : 'btn-ghost'}"
+          onclick={() => weatherStore.selectArea(area.code)}
+        >
+          ★ {area.name}
+        </button>
+      {/each}
+    </div>
+  {/if}
+
   <!-- メインコンテンツ -->
   <main class="flex-1 p-4 flex flex-col gap-4 max-w-lg mx-auto w-full">
+
+    <!-- 気象警報バナー（発表中の警報・注意報があるときのみ表示） -->
+    {#if $weatherStore.warning.severity !== 'none'}
+      <div class="alert {$weatherStore.warning.severity === 'warning' ? 'alert-error' : 'alert-warning'} shadow-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-5 w-5" fill="none" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        <div>
+          <p class="font-semibold text-sm">
+            {$weatherStore.warning.severity === 'warning' ? '気象警報' : '気象注意報'}
+          </p>
+          <p class="text-xs">{$weatherStore.warning.kinds.join('・')}</p>
+        </div>
+      </div>
+    {/if}
 
     <!-- エラーバナー -->
     {#if $weatherStore.error}
@@ -171,6 +239,21 @@
         weather={$weatherStore.weatherData.current}
         area={$selectedArea}
       />
+
+      <!-- 天気概況テキスト -->
+      {#if $weatherStore.forecastText?.body}
+        <section class="card bg-base-100 shadow-sm w-full">
+          <div class="card-body gap-2 py-3">
+            <h3 class="text-sm font-semibold text-base-content/60">天気概況</h3>
+            {#if $weatherStore.forecastText.headline}
+              <p class="text-sm font-medium">{$weatherStore.forecastText.headline}</p>
+            {/if}
+            <p class="text-xs text-base-content/70 whitespace-pre-line leading-relaxed">
+              {$weatherStore.forecastText.body}
+            </p>
+          </div>
+        </section>
+      {/if}
 
       <!-- 7日間予報 -->
       {#if $weatherStore.weatherData.dailyForecasts.length > 0}

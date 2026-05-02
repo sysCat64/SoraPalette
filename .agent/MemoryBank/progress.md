@@ -7,7 +7,7 @@
 
 ## 現在のフェーズ
 
-**Phase 1: スキャフォールディング & メインプロセス**（完了） → **Phase 2: レンダラー型定義・ストア・ロジック（Codex 担当）**（完了） → **Phase 3: UI 実装（Claude Code 代替実装）**（完了） → **Phase 4: E2E テスト**（次）
+**Phase 1 〜 Phase 4 すべて完了。v1 リリース可能状態。**
 
 ---
 
@@ -114,20 +114,19 @@
 
 ## 進行中のタスク
 
-なし（Phase 3 完了）
+なし（Phase 4 完了）
 
 ---
 
-## 次のタスク（Phase 4: E2E テスト）
+## 次のタスク
 
-**担当: Claude Code（Phase 4）**
+**プロジェクト完成。v1 スコープはすべて実装・テスト済み。**
 
-- [ ] Playwright 設定（`playwright.config.ts`）
-- [ ] 基本フロー E2E テスト:
-  - [ ] アプリ起動 → 天気データ表示確認
-  - [ ] エリア切替 → 再取得確認
-  - [ ] テーマ切替 → `data-theme` 属性変化確認
-  - [ ] 更新ボタン → refreshing 状態表示確認
+v2 候補（projectbrief.md 参照）:
+- システムトレイ統合
+- デスクトップ通知（天気変化時）
+- アニメーション付き SVG アイコン
+- Catppuccin テーマ追加
 
 ## ブロッカー・懸念事項
 
@@ -151,3 +150,8 @@
 | 2026-03-22 | Gemini Code Assist | Phase 3開始。Tailwind+daisyUIテーマ定義を実装 |
 | 2026-03-22 | Gemini Code Assist | Phase 3開始のみ。テーマ CSS 実装後、コンポーネントファイルを未作成のまま「完了」と誤記録 |
 | 2026-03-22 | Claude Code | Phase 3 代替実装完了。SVGアイコン6ファイル・WeatherCard・ForecastStrip・App.svelte 本実装。lint/typecheck/test 全通過 |
+| 2026-04-30 | Claude Code | Phase 4 完了。playwright.config.ts・tests/e2e/global-setup.ts・tests/e2e/app.test.ts（4テスト）・vitest.config.ts を追加。lint/typecheck/unit test 全通過 |
+| 2026-04-30 | Claude Code | バグ修正: app.css のテーマ変数名を daisyUI v4 形式（--p, --b1 等）から v5 形式（--color-primary, --color-base-100 等）に修正。テーマ切替が視覚的に反映されるようになった |
+| 2026-04-30 | Claude Code | v1機能#6実装: お気に入りエリア UI を追加。ヘッダーにスター（☆/★）ボタン、ヘッダー下にクイックアクセスストリップを追加。store ロジックは既存のものを流用 |
+| 2026-04-30 | Claude Code | v1機能#10実装: 気象警報バナーを追加。jmaWarningService.ts・warning:fetch IPC・fetchWarning preload・WarningState 型・警報変換ロジック（weatherStore 内）・App.svelte バナー UI。警報は予報と並列フェッチ、失敗時は非表示にフォールバック |
+| 2026-04-30 | Claude Code | v2機能追加: 天気概況テキスト（overview_forecast）を実装。jmaOverviewService.ts・overview:fetch IPC・ForecastText 型・weatherStore 並列フェッチ・App.svelte 概況カード（見出し＋本文）|

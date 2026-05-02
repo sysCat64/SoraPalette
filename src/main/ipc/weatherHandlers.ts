@@ -16,6 +16,8 @@
 
 import { ipcMain } from 'electron'
 import { fetchForecast, type JmaForecastRaw } from '../services/jmaService'
+import { fetchWarning } from '../services/jmaWarningService'
+import { fetchOverviewForecast } from '../services/jmaOverviewService'
 
 // ---------------------------------------------------------------------------
 // メモリキャッシュ（Phase 1 実装）
@@ -66,6 +68,35 @@ export function registerWeatherHandlers(): void {
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error)
       console.error(`[weather:fetch] エラー (areaCode=${areaCode}):`, message)
+      return { success: false, error: message }
+    }
+  })
+
+  // ------------------------------------------------------------------
+  // warning:fetch - 気象警報・注意報データを取得する
+  // キャッシュなし（警報情報は常に最新を取得する）
+  // ------------------------------------------------------------------
+  ipcMain.handle('warning:fetch', async (_event, areaCode: string) => {
+    try {
+      const data = await fetchWarning(areaCode)
+      return { success: true, data }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error)
+      console.error(`[warning:fetch] エラー (areaCode=${areaCode}):`, message)
+      return { success: false, error: message }
+    }
+  })
+
+  // ------------------------------------------------------------------
+  // overview:fetch - 天気概況テキストを取得する（キャッシュなし）
+  // ------------------------------------------------------------------
+  ipcMain.handle('overview:fetch', async (_event, areaCode: string) => {
+    try {
+      const data = await fetchOverviewForecast(areaCode)
+      return { success: true, data }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error)
+      console.error(`[overview:fetch] エラー (areaCode=${areaCode}):`, message)
       return { success: false, error: message }
     }
   })

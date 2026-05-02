@@ -1,42 +1,71 @@
 /**
  * src/renderer/app.css
  *
- * Tailwind CSS v4 + daisyUI のベース CSS。
- * テーマ定義（sora-light / sora-dark）は Gemini が実装する。
+ * Tailwind CSS v4 + daisyUI v5 のベース CSS。
  *
- * 担当: Gemini（Phase 3）/ Claude（Phase 1 最小限スタブ）
+ * daisyUI v5 ではテーマ変数の命名が変わった（v4 → v5）:
+ *   旧: --p, --pc, --b1, --b2, --b3, --bc  など
+ *   新: --color-primary, --color-base-100   など（oklch() でラップ）
+ * 旧名で定義してもコンポーネントに反映されないため、新名に統一する。
+ *
+ * 担当: Claude Code（Phase 4 バグ修正）
  */
 
 @import "tailwindcss";
 @plugin "daisyui";
 
-/* SoraPalette テーマ定義 */
-@layer base {
-  [data-theme="sora-light"] {
-    color-scheme: light;
-    --p: 68% 0.15 250; /* primary */
-    --pc: 100% 0 0;    /* primary-content */
-    --s: 96% 0.02 230; /* secondary */
-    --sc: 42% 0.12 250; /* secondary-content */
-    --a: 82% 0.16 85;  /* accent */
-    --ac: 100% 0 0;    /* accent-content */
-    --b1: 97% 0.02 245; /* base-100 */
-    --b2: 94% 0.03 245; /* base-200 */
-    --b3: 90% 0.04 245; /* base-300 */
-    --bc: 30% 0.06 250; /* base-content */
-  }
+/* ---- sora-light: 空と昼間をイメージしたライトテーマ ---- */
+[data-theme="sora-light"] {
+  color-scheme: light;
 
-  [data-theme="sora-dark"] {
-    color-scheme: dark;
-    --p: 82% 0.08 245;
-    --pc: 18% 0.04 250;
-    --s: 30% 0.08 250;
-    --sc: 82% 0.08 245;
-    --a: 90% 0.14 90;
-    --ac: 18% 0.04 250;
-    --b1: 18% 0.04 250;
-    --b2: 22% 0.06 250;
-    --b3: 28% 0.06 250;
-    --bc: 92% 0.01 250;
-  }
+  --color-primary:           oklch(68% 0.15 250);  /* 空色ブルー */
+  --color-primary-content:   oklch(100% 0 0);
+
+  --color-secondary:         oklch(96% 0.02 230);
+  --color-secondary-content: oklch(42% 0.12 250);
+
+  --color-accent:            oklch(82% 0.16 85);   /* 夕焼けオレンジ */
+  --color-accent-content:    oklch(100% 0 0);
+
+  --color-base-100:          oklch(97% 0.02 245);
+  --color-base-200:          oklch(94% 0.03 245);
+  --color-base-300:          oklch(90% 0.04 245);
+  --color-base-content:      oklch(30% 0.06 250);
+
+  --color-info:              oklch(72% 0.11 221);
+  --color-info-content:      oklch(100% 0 0);
+  --color-success:           oklch(73% 0.17 163);
+  --color-success-content:   oklch(100% 0 0);
+  --color-warning:           oklch(84% 0.16 84);
+  --color-warning-content:   oklch(30% 0.06 84);
+  --color-error:             oklch(64% 0.21 25);
+  --color-error-content:     oklch(100% 0 0);
+}
+
+/* ---- sora-dark: 夜空をイメージしたダークテーマ ---- */
+[data-theme="sora-dark"] {
+  color-scheme: dark;
+
+  --color-primary:           oklch(82% 0.08 245);  /* 月明かりブルー */
+  --color-primary-content:   oklch(18% 0.04 250);
+
+  --color-secondary:         oklch(30% 0.08 250);
+  --color-secondary-content: oklch(82% 0.08 245);
+
+  --color-accent:            oklch(90% 0.14 90);   /* 星明かりゴールド */
+  --color-accent-content:    oklch(18% 0.04 250);
+
+  --color-base-100:          oklch(18% 0.04 250);
+  --color-base-200:          oklch(22% 0.06 250);
+  --color-base-300:          oklch(28% 0.06 250);
+  --color-base-content:      oklch(92% 0.01 250);
+
+  --color-info:              oklch(72% 0.11 221);
+  --color-info-content:      oklch(18% 0.04 250);
+  --color-success:           oklch(73% 0.17 163);
+  --color-success-content:   oklch(18% 0.04 250);
+  --color-warning:           oklch(84% 0.16 84);
+  --color-warning-content:   oklch(18% 0.04 250);
+  --color-error:             oklch(64% 0.21 25);
+  --color-error-content:     oklch(100% 0 0);
 }

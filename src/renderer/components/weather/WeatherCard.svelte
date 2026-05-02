@@ -43,7 +43,7 @@
 
     <!-- メイン: アイコン + 天気説明 + 気温 -->
     <div class="flex items-center gap-6">
-      <WeatherIcon icon={weather.icon} size={96} />
+      <WeatherIcon icon={weather.icon} size={96} animated={true} />
 
       <div class="flex flex-col gap-1">
         <!-- 天気説明文 -->

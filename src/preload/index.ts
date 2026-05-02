@@ -39,6 +39,16 @@ const electronAPI: ElectronAPI = {
     ipcRenderer.invoke('store:set', key, value),
 
   /**
+   * 天気概況テキストを取得する
+   */
+  fetchOverview: (areaCode: string) => ipcRenderer.invoke('overview:fetch', areaCode),
+
+  /**
+   * 気象警報・注意報データを取得する
+   */
+  fetchWarning: (areaCode: string) => ipcRenderer.invoke('warning:fetch', areaCode),
+
+  /**
    * デスクトップ通知を送信する
    */
   sendNotification: (title: string, body: string) =>

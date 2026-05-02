@@ -5,7 +5,7 @@
 
 ---
 
-## 実装済み機能（v1）
+## 実装済み機能
 
 | # | 機能 | 状態 |
 |---|------|------|
@@ -18,7 +18,8 @@
 | 7 | テーマ切替（sora-light / sora-dark） | ✅ 実装済み |
 | 8 | 更新ボタン＋自動更新（30分間隔） | ✅ 実装済み |
 | 9 | オフラインキャッシュ＋最終更新日時表示 | ✅ 実装済み |
-| 10 | 気象警報バナー（JMA警報API連携） | 🔲 未実装（v1後半） |
+| 10 | 気象警報バナー（JMA警報API連携） | ✅ 実装済み |
+| + | 天気概況テキスト（overview_forecast API連携） | ✅ 実装済み（v1追加） |
 
 ---
 
@@ -110,8 +111,8 @@ SoraPalette/
 ├── src/
 │   ├── main/               # Electronメインプロセス
 │   │   ├── index.ts        # エントリポイント・BrowserWindow生成
-│   │   ├── services/       # JMA API fetch・キャッシュ
-│   │   └── ipc/            # IPCハンドラ（天気・設定・通知）
+│   │   ├── services/       # JMA API fetch・キャッシュ（警報・概況含む）
+│   │   └── ipc/            # IPCハンドラ（天気・設定・通知・警報）
 │   ├── preload/            # contextBridgeによるIPC API定義
 │   │   ├── index.ts        # contextBridge実装
 │   │   └── types.ts        # window.electronAPI の型定義（全AIの型境界）
@@ -119,8 +120,8 @@ SoraPalette/
 │       ├── components/
 │       │   ├── icons/      # SVG天気アイコン（Svelte コンポーネント）
 │       │   └── weather/    # WeatherCard・ForecastStrip
-│       ├── stores/         # weatherStore（状態管理）
-│       ├── lib/            # 変換ロジック・エリアコード・天気コードマップ
+│       ├── stores/         # weatherStore（状態管理・警報・概況）
+│       ├── lib/            # 変換ロジック・エリアコード・天気コードマップ・警報変換
 │       └── types/          # JMA APIレスポンス型・アプリ内部型
 ├── tests/
 │   ├── unit/               # Vitestユニットテスト
@@ -152,4 +153,4 @@ SoraPalette/
 
 ## ライセンス
 
-ライセンスは今後整備予定です。
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) - 詳細は [LICENSE](LICENSE) ファイルを参照してください。

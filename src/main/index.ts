@@ -40,6 +40,9 @@ function createWindow(): BrowserWindow {
     // macOS: タイトルバーを非表示にするなどは Phase 2 以降で検討
     autoHideMenuBar: true,
 
+    // アプリアイコン
+    icon: join(__dirname, '../../resources/icon.png'),
+
     webPreferences: {
       // プリロードスクリプト: contextBridge 経由で API を公開する
       preload: join(__dirname, '../preload/index.js'),
@@ -77,11 +80,18 @@ function createWindow(): BrowserWindow {
 // アプリライフサイクル
 // ---------------------------------------------------------------------------
 
+app.setName('SoraPalette')
+
 app.whenReady().then(() => {
   // IPC ハンドラをすべて登録する
   registerWeatherHandlers()
   registerStoreHandlers()
   registerNotificationHandlers()
+
+  // macOS Dock アイコンを設定する
+  if (process.platform === 'darwin') {
+    app.dock.setIcon(join(__dirname, '../../resources/icon.png'))
+  }
 
   // メインウィンドウを生成する
   createWindow()

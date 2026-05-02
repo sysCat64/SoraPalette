@@ -1,5 +1,6 @@
 {
   "name": "sora-palette",
+  "productName": "SoraPalette",
   "version": "0.1.0",
   "description": "JMA気象データを使った天気予報デスクトップアプリ（Electron + Svelte 学習プロジェクト）",
   "main": "./out/main/index.js",

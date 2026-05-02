@@ -109,6 +109,31 @@ export interface WeatherData {
 }
 
 /**
+ * 天気概況テキスト。
+ * JMA overview_forecast API から取得した見出しと詳細テキストを保持する。
+ */
+export interface ForecastText {
+  /** 短い見出し文（1〜2文） */
+  headline: string | null
+  /** 詳細な概況テキスト（改行 \n を含む） */
+  body: string | null
+}
+
+/** 警報の重要度。UI の色分けに使う */
+export type WarningSeverity = 'warning' | 'advisory' | 'none'
+
+/**
+ * 気象警報・注意報の表示用データ。
+ * JMA 生レスポンスを weatherStore 内で変換して保持する。
+ */
+export interface WarningState {
+  /** 最大重要度（警報 > 注意報 > なし） */
+  severity: WarningSeverity
+  /** 発表中の警報・注意報名リスト（例: ["大雨注意報", "強風注意報"]） */
+  kinds: string[]
+}
+
+/**
  * weatherStore の公開 state。
  * loading / refreshing / usingCache を分け、UI が状態遷移を描き分けやすくしている。
  */
@@ -124,4 +149,8 @@ export interface WeatherStoreState {
   autoRefreshIntervalMinutes: number
   weatherData: WeatherData | null
   lastUpdated: string | null
+  /** 気象警報・注意報の状態（発表なしの場合は severity: 'none'） */
+  warning: WarningState
+  /** 天気概況テキスト（取得失敗時は null） */
+  forecastText: ForecastText | null
 }
