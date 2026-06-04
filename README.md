@@ -3,7 +3,20 @@
 [![CI](https://github.com/sysCat64/SoraPalette/actions/workflows/ci.yml/badge.svg)](https://github.com/sysCat64/SoraPalette/actions/workflows/ci.yml)
 
 気象庁オープンデータを使った、Electronデスクトップ天気予報アプリです。
-**デスクトップアプリ開発の学習**を目的としており、実装とあわせて設計意図や日本語コメントも残しています。
+要件整理、JMA APIの調査、Electron IPC設計、Svelteの状態管理、テストとCI整備までを、
+AIエージェントと役割分担しながら進めた学習用プロジェクトです。
+
+完成したアプリだけでなく、**AI協働でデスクトップアプリを作るプロセス**が伝わるように、
+設計意図、実装メモ、日本語コメント、ADRをリポジトリ内に残しています。
+
+---
+
+## このリポジトリで見てほしいこと
+
+- Electron の `contextBridge` / IPC を使い、レンダラーから Node.js API に直接触れない構成にしていること
+- JMA のネストした JSON を `types/` と `lib/` で内部表現へ変換し、Svelte store から UI に渡していること
+- Claude Code / OpenAI Codex / Gemini Code Assist の担当領域を分け、MemoryBank と ADR で引き継ぎを残していること
+- Vitest のユニットテストと GitHub Actions CI で、変換ロジックと store の基本品質を継続確認していること
 
 ---
 
@@ -68,7 +81,7 @@ Main Process (Node.js + Electron)
 ### インストール
 
 ```bash
-git clone https://github.com/<your-username>/SoraPalette.git
+git clone https://github.com/sysCat64/SoraPalette.git
 cd SoraPalette
 npm install
 ```
@@ -151,11 +164,12 @@ SoraPalette/
 
 ## 学習目的について
 
-このプロジェクトはデスクトップアプリ開発の**学習**を主目的としています。
+このプロジェクトはデスクトップアプリ開発と、AIエージェントとの協働開発を学ぶことを主目的としています。
 
 - ソースコード全体に**詳細な日本語コメント**を記述
 - `docs/ja/` に学習用ガイド（IPC・Svelte・JMA APIの解説）を収録
 - `docs/decisions/` にアーキテクチャ上の判断記録（ADR）を収録
+- `.agent/MemoryBank/` に AI 間の進捗・設計メモを保存
 
 ---
 
