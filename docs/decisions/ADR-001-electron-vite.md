@@ -59,4 +59,4 @@ npm create electron-vite@latest sora-palette -- --template svelte-ts
 - `out/` ディレクトリにビルド結果が生成される（リポジトリには含めない）
 - Viteの `type: "module"` と Electron の CJS 環境の混在に注意
   - `electron-vite` の設定がこれを適切に処理してくれる
-- `electron-builder.yml` でパッケージング設定を行う
+- 現時点では配布パッケージング設定は導入せず、ローカル学習用の `npm run build` / `npm run preview` を中心に扱う

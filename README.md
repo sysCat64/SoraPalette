@@ -125,7 +125,7 @@ SoraPalette/
 │       └── types/          # JMA APIレスポンス型・アプリ内部型
 ├── tests/
 │   ├── unit/               # Vitestユニットテスト
-│   └── e2e/                # PlaywrightのE2Eテスト（Phase 4で整備予定）
+│   └── e2e/                # PlaywrightのE2Eテスト
 ├── docs/
 │   ├── ja/                 # 学習用ガイド（IPC・Svelte・JMA API解説）
 │   └── decisions/          # アーキテクチャ判断記録（ADR-001〜003）

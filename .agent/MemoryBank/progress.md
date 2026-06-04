@@ -62,7 +62,7 @@
   - `AGENT.md`（リポジトリルート・全AI共通）
   - `AGENTS.md`（リポジトリルート・OpenAI Codex専用）
   - `CLAUDE.md`（リポジトリルート・Claude Code専用）
-  - `GEMINI.md`（Gリポジトリルート・emini Code Assist専用）
+  - `GEMINI.md`（リポジトリルート・Gemini Code Assist専用）
   - `.agent/AGENT.md`（全AI共通）
   - `.agent/AGENTS.md`（OpenAI Codex専用）
   - `.agent/CLAUDE.md`（Claude Code専用）
@@ -125,15 +125,11 @@
 v2 候補（projectbrief.md 参照）:
 - システムトレイ統合
 - デスクトップ通知（天気変化時）
-- アニメーション付き SVG アイコン
 - Catppuccin テーマ追加
 
 ## ブロッカー・懸念事項
 
-- [ ] **未決事項**: `projectbrief.md` の「未決事項」セクションを確認のこと
-  - JMA APIティア選択（→ ADR-003でforecastを採用済み）
-  - パッケージマネージャー選択（npm推定、要確認）
-  - ブランチ戦略（未決）
+- [ ] GitHub Actions CI は未設定。必要になったら lint・typecheck・unit test の自動実行を検討する。
 
 ---
 
@@ -155,3 +151,4 @@ v2 候補（projectbrief.md 参照）:
 | 2026-04-30 | Claude Code | v1機能#6実装: お気に入りエリア UI を追加。ヘッダーにスター（☆/★）ボタン、ヘッダー下にクイックアクセスストリップを追加。store ロジックは既存のものを流用 |
 | 2026-04-30 | Claude Code | v1機能#10実装: 気象警報バナーを追加。jmaWarningService.ts・warning:fetch IPC・fetchWarning preload・WarningState 型・警報変換ロジック（weatherStore 内）・App.svelte バナー UI。警報は予報と並列フェッチ、失敗時は非表示にフォールバック |
 | 2026-04-30 | Claude Code | v2機能追加: 天気概況テキスト（overview_forecast）を実装。jmaOverviewService.ts・overview:fetch IPC・ForecastText 型・weatherStore 並列フェッチ・App.svelte 概況カード（見出し＋本文）|
+| 2026-06-05 | OpenAI Codex | ドキュメントの古い予定表現を整理。README・LICENSE・ADR・MemoryBank の現状説明を v1 完了後の状態に合わせた |

@@ -24,7 +24,7 @@
 | 言語 | TypeScript (strict mode) |
 | スタイリング | Tailwind CSS + daisyUI |
 | ビルドツール | Vite (electron-vite) |
-| パッケージャー | electron-builder |
+| パッケージャー | 未導入（ローカル学習用ビルドのみ） |
 | テスト（ユニット） | Vitest |
 | テスト（E2E） | Playwright |
 | 対象OS | クロスプラットフォーム（macOS / Windows / Linux） |
