@@ -13,6 +13,18 @@
 
 ## 完了したタスク
 
+### 2026-06-05 | OpenAI Codex（CI整備）
+- [x] `.github/workflows/ci.yml` を追加
+  - `main` への push / pull request で `npm ci`, `npm run lint`, `npm run typecheck`, `npm run test` を実行
+  - E2E テストは JMA API への実ネットワークアクセスと Electron 起動を伴うため CI 対象外
+- [x] `README.md` に CI バッジと実行内容を追記
+- [x] `projectbrief.md` の GitHub Actions CI 未設定項目を完了に更新
+
+**メモ（次のAIへ）**:
+- GitHub Actions は公式 action の `actions/checkout@v6` / `actions/setup-node@v6` を使用
+- Node.js は README の必要環境に合わせて `20` を指定
+- 初回 push 後は GitHub 上の Actions 結果を確認すること
+
 ### 2026-03-22 | Claude Code（Phase 1）
 - [x] プロジェクト構成ファイル作成（手動スキャフォールド）:
   - `package.json` (electron-vite, svelte, tailwindcss v4, daisyui, electron-store, vitest, playwright, eslint 9)
@@ -129,7 +141,7 @@ v2 候補（projectbrief.md 参照）:
 
 ## ブロッカー・懸念事項
 
-- [ ] GitHub Actions CI は未設定。必要になったら lint・typecheck・unit test の自動実行を検討する。
+なし
 
 ---
 
@@ -152,3 +164,4 @@ v2 候補（projectbrief.md 参照）:
 | 2026-04-30 | Claude Code | v1機能#10実装: 気象警報バナーを追加。jmaWarningService.ts・warning:fetch IPC・fetchWarning preload・WarningState 型・警報変換ロジック（weatherStore 内）・App.svelte バナー UI。警報は予報と並列フェッチ、失敗時は非表示にフォールバック |
 | 2026-04-30 | Claude Code | v2機能追加: 天気概況テキスト（overview_forecast）を実装。jmaOverviewService.ts・overview:fetch IPC・ForecastText 型・weatherStore 並列フェッチ・App.svelte 概況カード（見出し＋本文）|
 | 2026-06-05 | OpenAI Codex | ドキュメントの古い予定表現を整理。README・LICENSE・ADR・MemoryBank の現状説明を v1 完了後の状態に合わせた |
+| 2026-06-05 | OpenAI Codex | GitHub Actions CI を追加。main push / pull request で lint・typecheck・unit test を自動実行 |

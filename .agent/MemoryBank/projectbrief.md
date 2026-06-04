@@ -94,7 +94,7 @@
 
 ### 開発ツール
 - [x] **パッケージマネージャー**: `npm`（`package.json` ベース、`packageManager` フィールドなし）
-- [ ] **GitHub Actions CI**: 未設定。lint・typecheck・unit test の自動実行は検討中
+- [x] **GitHub Actions CI**: `main` への push / pull request で lint・typecheck・unit test を自動実行
 
 ### AI連携プロセス
 - [x] **ブランチ戦略**: main 直接コミット方式を採用（ブランチ分離なし）

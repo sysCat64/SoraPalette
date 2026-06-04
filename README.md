@@ -1,5 +1,7 @@
 # ⛅ SoraPalette（ソラ・パレット）
 
+[![CI](https://github.com/sysCat64/SoraPalette/actions/workflows/ci.yml/badge.svg)](https://github.com/sysCat64/SoraPalette/actions/workflows/ci.yml)
+
 気象庁オープンデータを使った、Electronデスクトップ天気予報アプリです。
 **デスクトップアプリ開発の学習**を目的としており、実装とあわせて設計意図や日本語コメントも残しています。
 
@@ -101,6 +103,19 @@ npm run test
 # E2Eテスト（Playwright）
 npm run test:e2e
 ```
+
+### CI
+
+GitHub Actions では、`main` への push と pull request で以下を実行します。
+
+```bash
+npm ci
+npm run lint
+npm run typecheck
+npm run test
+```
+
+E2Eテストは JMA API への実ネットワークアクセスと Electron 起動を伴うため、ローカル確認用として扱います。
 
 ---
 
