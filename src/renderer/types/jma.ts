@@ -111,10 +111,11 @@ export type JmaForecastResponse = JmaForecastReport[]
 // ---------------------------------------------------------------------------
 
 /** 警報・注意報の種別 1 件 */
-export interface JmaWarningKind {
+export interface JmaWarningItem {
   code?: string
+  /** 旧モックや将来の拡張で名前が来た場合は優先して使う */
   name?: string
-  /** "発表" | "継続" | "解除" */
+  /** "発表" | "継続" | "解除" | "発表警報・注意報はなし" など */
   status?: string
 }
 
@@ -122,7 +123,10 @@ export interface JmaWarningKind {
 export interface JmaWarningArea {
   code?: string
   name?: string
-  kinds?: JmaWarningKind[]
+  /** 現在の JMA warning API が返す警報・注意報配列 */
+  warnings?: JmaWarningItem[]
+  /** 旧モック互換。実レスポンスでは warnings を使う */
+  kinds?: JmaWarningItem[]
 }
 
 /** エリア種別ごとのグループ */

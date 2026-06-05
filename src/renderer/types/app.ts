@@ -131,6 +131,10 @@ export interface WarningState {
   severity: WarningSeverity
   /** 発表中の警報・注意報名リスト（例: ["大雨注意報", "強風注意報"]） */
   kinds: string[]
+  /** JMA が返す見出し文。対象地域全体の注意喚起を補足表示する */
+  headline: string | null
+  /** 警報 API 取得に失敗した場合の理由。発表なしとは区別して UI に渡す */
+  error: string | null
 }
 
 /**

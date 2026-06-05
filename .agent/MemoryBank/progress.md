@@ -13,6 +13,25 @@
 
 ## 完了したタスク
 
+### 2026-06-05 | OpenAI Codex（気象警報・注意報表示修正）
+- [x] JMA 警報 API の実レスポンス形状を確認
+  - 各エリアの種別配列は `kinds` ではなく `warnings`
+  - `warnings` の各要素は主に `code` と `status` を持つため、表示名はコードから変換する必要がある
+- [x] `src/renderer/lib/jmaWarningTransformer.ts` を修正
+  - `warnings` 形式を読み取り、警報・注意報コードを表示名へ変換
+  - 発表中 status のみを表示対象にし、重複種別をまとめる
+- [x] `WarningState` に `headline` と `error` を追加
+  - 発表中の注意喚起見出しを UI に渡す
+  - 警報取得失敗を「発表なし」と区別して UI に渡す
+- [x] `App.svelte` の警報バナーを更新
+  - 発表中は `headlineText` と種別名を表示
+  - 警報 API 取得失敗時は警報情報だけ確認できなかったことを表示
+- [x] `tests/unit/jmaWarningTransformer.test.ts` / `tests/unit/weatherStore.test.ts` に回帰テストを追加
+
+**メモ（次のAIへ）**:
+- 警報 API は `warning:fetch` 経由で取得済み。今回の修正は renderer の変換・状態・表示の取りこぼし修正が中心
+- 今後、市区町村単位でより正確に出す場合は、都道府県コードだけでなく class20s / class15s / class10s の表示粒度を設計すること
+
 ### 2026-06-05 | OpenAI Codex（CI整備）
 - [x] `.github/workflows/ci.yml` を追加
   - `main` への push / pull request で `npm ci`, `npm run lint`, `npm run typecheck`, `npm run test` を実行

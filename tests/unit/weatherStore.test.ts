@@ -2,7 +2,7 @@ import { get } from 'svelte/store'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createWeatherStore } from '../../src/renderer/stores/weatherStore'
 import type { ElectronAPI, IpcResult, StoreKey, StoreSchema } from '../../src/preload/types'
-import type { JmaForecastResponse } from '../../src/renderer/types/jma'
+import type { JmaForecastResponse, JmaWarningRaw } from '../../src/renderer/types/jma'
 
 const sampleForecast: JmaForecastResponse = [
   {
@@ -42,6 +42,23 @@ const sampleForecast: JmaForecastResponse = [
   }
 ]
 
+const sampleWarning = {
+  headlineText: '伊豆諸島南部では、強風や高波に注意してください。',
+  areaTypes: [
+    {
+      areas: [
+        {
+          code: '130030',
+          warnings: [
+            { code: '14', status: '継続' },
+            { code: '15', status: '継続' },
+          ],
+        },
+      ],
+    },
+  ],
+} as unknown as JmaWarningRaw
+
 function createSuccess<T>(data: T): IpcResult<T> {
   return { success: true, data }
 }
@@ -61,6 +78,8 @@ function createMockApi(overrides?: Partial<ElectronAPI>): ElectronAPI {
   return {
     fetchWeather: vi.fn(async () => createSuccess(sampleForecast)),
     readWeatherCache: vi.fn(async () => createSuccess(sampleForecast)),
+    fetchWarning: vi.fn(async () => createSuccess({ areaTypes: [] })),
+    fetchOverview: vi.fn(async () => createSuccess({})),
     storeGet: vi.fn(async <K extends StoreKey>(key: K) => createSuccess(storeState[key])),
     storeSet: vi.fn(async <K extends StoreKey>(key: K, value: StoreSchema[K]) => {
       storeState[key] = value
@@ -109,6 +128,41 @@ describe('weatherStore', () => {
     expect(state.usingCache).toBe(true)
     expect(state.error).toBeNull()
     expect(api.readWeatherCache).toHaveBeenCalledWith('130000')
+
+    store.destroy()
+  })
+
+  it('警報APIの warnings 形式を state に保持する', async () => {
+    const api = createMockApi({
+      fetchWarning: vi.fn(async () => createSuccess(sampleWarning))
+    })
+    const store = createWeatherStore(api)
+
+    await store.initialize()
+
+    const state = get(store)
+    expect(state.warning.severity).toBe('advisory')
+    expect(state.warning.kinds).toEqual(['雷注意報', '強風注意報'])
+    expect(state.warning.headline).toBe('伊豆諸島南部では、強風や高波に注意してください。')
+    expect(state.warning.error).toBeNull()
+
+    store.destroy()
+  })
+
+  it('警報取得失敗時は天気取得を維持しつつ warning.error に記録する', async () => {
+    const api = createMockApi({
+      fetchWarning: vi.fn(async () => createError('warning api error'))
+    })
+    const store = createWeatherStore(api)
+
+    await store.initialize()
+
+    const state = get(store)
+    expect(state.weatherData?.current.icon).toBe('sunny')
+    expect(state.error).toBeNull()
+    expect(state.warning.severity).toBe('none')
+    expect(state.warning.kinds).toHaveLength(0)
+    expect(state.warning.error).toBe('warning api error')
 
     store.destroy()
   })

@@ -18,10 +18,16 @@ export interface JmaWarningRaw {
     areas?: Array<{
       code?: string
       name?: string
+      warnings?: Array<{
+        code?: string
+        name?: string
+        /** "発表" | "継続" | "解除" | "発表警報・注意報はなし" など */
+        status?: string
+      }>
+      /** 旧モック互換。実レスポンスでは warnings を使う */
       kinds?: Array<{
         code?: string
         name?: string
-        /** "発表" | "継続" | "解除" */
         status?: string
       }>
     }>

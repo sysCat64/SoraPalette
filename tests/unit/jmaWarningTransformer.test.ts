@@ -51,6 +51,32 @@ const mockWithWarning: JmaWarningRaw = {
   ],
 }
 
+const mockOfficialWarningShape = {
+  headlineText: '伊豆諸島南部では、強風や高波に注意してください。',
+  areaTypes: [
+    {
+      areas: [
+        {
+          code: '130020',
+          warnings: [
+            { code: '14', status: '継続' },
+            { code: '20', status: '継続' },
+          ],
+        },
+        {
+          code: '130030',
+          warnings: [
+            { code: '14', status: '継続' },
+            { code: '15', status: '継続' },
+            { code: '16', status: '継続' },
+            { code: '20', status: '解除' },
+          ],
+        },
+      ],
+    },
+  ],
+} as unknown as JmaWarningRaw
+
 const mockNoWarning: JmaWarningRaw = {
   headlineText: '',
   areaTypes: [
@@ -94,6 +120,12 @@ describe('transformWarning', () => {
     const result = transformWarning(mockWithWarning)
     // 大雨警報は 2 エリアで発表されているが kinds には 1 件だけ
     expect(result.kinds.filter((k) => k === '大雨警報')).toHaveLength(1)
+  })
+
+  it('JMA公式の warnings 形式をコードから表示名へ変換する', () => {
+    const result = transformWarning(mockOfficialWarningShape)
+    expect(result.severity).toBe('advisory')
+    expect(result.kinds).toEqual(['雷注意報', '濃霧注意報', '強風注意報', '波浪注意報'])
   })
 
   it('すべて解除済みの場合は severity: none になる', () => {

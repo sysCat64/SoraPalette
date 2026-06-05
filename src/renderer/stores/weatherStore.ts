@@ -20,8 +20,13 @@ const DEFAULT_AUTO_REFRESH_INTERVAL_MINUTES = 30
 /** お気に入り最大件数 */
 const MAX_FAVORITE_AREAS = 5
 
+/** 警報なし状態を作る。error を渡すと「発表なし」ではなく「取得失敗」として扱える */
+function createEmptyWarning(error: string | null = null): WarningState {
+  return { severity: 'none', kinds: [], headline: null, error }
+}
+
 /** 警報なし状態の初期値 */
-const EMPTY_WARNING: WarningState = { severity: 'none', kinds: [] }
+const EMPTY_WARNING: WarningState = createEmptyWarning()
 
 /** store の初期状態 */
 const INITIAL_STATE: WeatherStoreState = {
@@ -139,10 +144,10 @@ async function fetchAndTransformWarning(
 
   try {
     const result = await api.fetchWarning(areaCode)
-    if (!result.success) return EMPTY_WARNING
+    if (!result.success) return createEmptyWarning(result.error)
     return transformWarning(result.data as JmaWarningRaw)
-  } catch {
-    return EMPTY_WARNING
+  } catch (error) {
+    return createEmptyWarning(error instanceof Error ? error.message : String(error))
   }
 }
 
@@ -236,7 +241,9 @@ export function createWeatherStore(api: ElectronAPI | undefined = resolveElectro
       }
 
       const forecast = forecastResult.value
-      const warning = warningResult.status === 'fulfilled' ? warningResult.value : EMPTY_WARNING
+      const warning = warningResult.status === 'fulfilled'
+        ? warningResult.value
+        : createEmptyWarning('警報情報の取得に失敗しました')
       const forecastText = overviewResult.status === 'fulfilled' ? overviewResult.value : null
 
       update((state) => ({
